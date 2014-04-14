@@ -29,10 +29,6 @@ public class KKMultiServerThread extends Thread {
 				BufferedReader in = new BufferedReader(new InputStreamReader(
 						socket.getInputStream()));) {
 			String inputLine, outputLine;
-			// KnockKnockProtocol kkp = new KnockKnockProtocol();
-			// outputLine = kkp.processInput(null);
-			// out.println(outputLine);
-
 			InputParser inputParser = new InputParser();
 
 			System.out.println("Connected from " + socket.getInetAddress()
@@ -81,37 +77,11 @@ public class KKMultiServerThread extends Thread {
 
 					} else if (tmp[0].equals("quit")) {
 
-						for (User u : users) {
-							try {
-//								Socket sock = new Socket();
-//								SocketAddress endpoint;
-//								PrintWriter out2;
-//								
-//								System.out.println("Sending message to: "
-//										+ u.getName());
-//
-//								String ipuser = "127.0.0.1";//u.getIp();
-//								System.out.println("IP: "+ipuser);
-//								endpoint = new InetSocketAddress(ipuser
-//										, Integer.parseInt(u
-//										.getPort()));
-//								System.out.println(endpoint.toString())	;
-//								sock.connect(endpoint);
-//								out2 = new PrintWriter(sock.getOutputStream());
-//								out2.println("HEY MAN GUY");
-//								sock.close();
-//								out2.close();
-//								
-								Socket client = new Socket("127.0.0.1", Integer.parseInt(u.getPort()));
-					            PrintWriter out2 = new PrintWriter(client.getOutputStream(), true);
-					            out2.println("HEY PENI");
-					            out2.close();
-					            client.close();
-							} catch (IllegalArgumentException e) {
-								e.printStackTrace();
-							}
-
-						}
+						break;
+						
+					} else {
+						System.out.println("Received garbage: '" + inputLine
+								+ "'");
 					}
 				} else {
 					System.out.println("Received garbage: '" + inputLine + "'");

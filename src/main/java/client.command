@@ -2,4 +2,4 @@
 clear
 javac client/*.java -Xlint:unchecked
 echo "Starting server"
-java client.KnockKnockClient localhost 32400
+java client.Client localhost 32400
