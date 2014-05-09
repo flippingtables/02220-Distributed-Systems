@@ -21,9 +21,23 @@ private static MessageVerifier verifyMessage;
 
 public static void main(String[] args) {
 	
+	/*
+	 * The app should look something like this:
+	 * 	starting app:
+			broadcast on	: IP:PORT
+			listen on	: IP1:PORT1
+			username	: USERNAME
+			friends		: X,Y,Z
+		message: “lat:long”
+		sending...
+		received from “friend”
+			Decrypting…
+			“lat:long”
+	 */
+	
 	if (args.length != 2) {
         System.err.println(
-            "Usage: java -jar broadcast.jar USERNAME");
+            "Usage: java -jar broadcast.jar YOURUSERNAME USERNAME_TO_SEND_TO");
         System.exit(1);
     }
 	verifyMessage = new MessageVerifier(args[0]);
