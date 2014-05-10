@@ -29,12 +29,7 @@ public class Server extends Thread {
                         byte[] sendData = new byte[1000];
 
                         // construct message to send
-                        
-//                        sendData = message(username, to, "hey man");
-//                        long threadID = Thread.currentThread().getId();
-                        
                         String messageToSend = coords.sendCoordinates();
-//                        System.out.println(messageToSend.getBytes().length);
                         sendData = message(username, to, messageToSend);
                         
                         DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, GROUP, PORT);
@@ -43,10 +38,8 @@ public class Server extends Thread {
                     }
                 } catch (Exception e) {
                 	System.out.println(e);
-//                    LOGGER.error(null, e);
                 }
             } catch (Exception e) {
-//                LOGGER.error(null, e);
             	System.out.println(e);
             } finally {
             	serverSocket.close();
@@ -66,22 +59,4 @@ public class Server extends Thread {
 	private String enryptMessagePayload(String message){
 		return message;
 	} 
-    
-//	private synchronized void putMessage() throws InterruptedException {
-//		while (messages.size() == MAXQUEUE)
-//			wait();
-//		messages.addElement(new java.util.Date().toString());
-//		notify();
-//	}
-//
-//	// Called by Consumer
-//	public synchronized String getMessage() throws InterruptedException {
-//		notify();
-//		while (messages.size() == 0)
-//			wait();
-//		String message = (String) messages.firstElement();
-//		messages.removeElement(message);
-//		return message;
-//
-//	}
 }
