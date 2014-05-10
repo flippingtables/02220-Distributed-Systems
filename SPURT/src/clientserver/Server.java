@@ -21,17 +21,21 @@ public class Server extends Thread {
 	
 	public void run() {
             DatagramSocket serverSocket = null;
+            Coordinates coords = new Coordinates();
             try {
                 serverSocket = new DatagramSocket();
                 try {
                     while (true) {
-                        byte[] sendData = new byte[256];
+                        byte[] sendData = new byte[1000];
 
                         // construct message to send
                         
 //                        sendData = message(username, to, "hey man");
 //                        long threadID = Thread.currentThread().getId();
-                        sendData = message(username, to, "hey man");
+                        
+                        String messageToSend = coords.sendCoordinates();
+//                        System.out.println(messageToSend.getBytes().length);
+                        sendData = message(username, to, messageToSend);
                         
                         DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, GROUP, PORT);
                         serverSocket.send(sendPacket);

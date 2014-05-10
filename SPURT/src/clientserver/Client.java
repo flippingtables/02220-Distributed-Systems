@@ -39,8 +39,8 @@ public class Client extends Thread {
 //                        System.out.println(message);
                         if (verifyMessage.checkRecipient(message)){
                         	System.out.println("Decrypting message payload...");
-                        	System.out.println("Sender: "+receivePacket.getAddress()+":"+receivePacket.getPort());
-                        	System.out.println("\tPayload: "+message.split(":")[2]);
+                        	System.out.println("Sender: "+message.split(":")[0]+"@"+receivePacket.getAddress()+":"+receivePacket.getPort());
+                        	System.out.println("\tCoordinates: "+message.split(":")[2]);
                         } else{
 //                        	System.out.println("Not for me.");
                         }
