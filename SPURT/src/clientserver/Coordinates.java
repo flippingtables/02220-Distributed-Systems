@@ -11,8 +11,10 @@ public class Coordinates {
 
 	}
 
-	static public String localizedFormat(String pattern, double value, Locale loc) {
-		NumberFormat nf = NumberFormat.getNumberInstance(loc);
+	static public String localizedFormat(double value) {
+		Locale locale =  new Locale("en", "US");
+		String pattern = "###,###.###";
+		NumberFormat nf = NumberFormat.getNumberInstance(locale);
 		DecimalFormat df = (DecimalFormat) nf;
 		df.applyPattern(pattern);
 		return df.format(value);
@@ -39,8 +41,8 @@ public class Coordinates {
 		double lat = (55 + Math.random());
 		double lon = (12 + Math.random());
 		Locale[] locales = { new Locale("en", "US"),new Locale("de", "DE"), new Locale("fr", "FR") };
-		localizedFormat("###,###.###", lat, locales[0]);
-		return localizedFormat("###,###.######", lat, locales[0])+","+localizedFormat("###,###.######", lon, locales[0]);
+//		alizedFormat("###,###.###", lat, locales[0]);
+		return localizedFormat(lat)+","+localizedFormat(lon);
 //		return df.format(lat) + "," + df.format(lon);
 	}
 }

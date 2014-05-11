@@ -3,7 +3,6 @@ package clientserver;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
-import java.util.Vector;
 
 public class Server extends Thread {
 	
@@ -19,6 +18,7 @@ public class Server extends Thread {
 		this.to= to;
 	}
 	
+	
 	public void run() {
             DatagramSocket serverSocket = null;
             Coordinates coords = new Coordinates();
@@ -26,7 +26,7 @@ public class Server extends Thread {
                 serverSocket = new DatagramSocket();
                 try {
                     while (true) {
-                        byte[] sendData = new byte[1000];
+                        byte[] sendData = new byte[256];
 
                         // construct message to send
                         String messageToSend = coords.sendCoordinates();
@@ -51,7 +51,6 @@ public class Server extends Thread {
 	 * @param to The receiver
 	 * @message The message payload, this will be encrypted before transmission
 	 */
-	
 	private byte[] message(String from, String to, String message){
 		return (from+":"+to+":"+enryptMessagePayload(message)).getBytes();
 	}

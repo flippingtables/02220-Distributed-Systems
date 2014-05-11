@@ -1,0 +1,16 @@
+{
+    "platform": "mac",
+    "jdk": "/Users/joannes/Downloads/openjdk-1.7.0-u40-unofficial-macosx-x86_64-image.zip",
+    "executable": "SPURT",
+    "appjar": "target/spurt.jar",
+    "mainclass": "src/clientserver/SPURT",
+    "vmargs": [
+       "-Xmx1G"
+    ],
+    "resources": [
+       
+        "src/clientserver"
+    ],
+    "minimizejre": false,
+    "outdir": "out-mac"
+}

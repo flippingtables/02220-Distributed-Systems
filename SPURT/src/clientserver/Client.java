@@ -5,6 +5,7 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
+import java.util.HashSet;
 import java.util.Vector;
 
 public class Client extends Thread {
@@ -14,6 +15,7 @@ public class Client extends Thread {
 	private String username;
 	private String to;
 	private MessageVerifier verifyMessage;
+	private HashSet<String> usersInNetwork = new HashSet<String>();
 
 	public Client(InetAddress group, int port, String name, String to) {
 		this.GROUP = group;
@@ -29,6 +31,7 @@ public class Client extends Thread {
 		try {
 			multicastSocket = new MulticastSocket(PORT);
 			multicastSocket.joinGroup(GROUP);
+			int users = 0;
 			while (true) {
 				try {
 					byte[] receiveData = new byte[256];
@@ -36,6 +39,16 @@ public class Client extends Thread {
 							receiveData, receiveData.length);
 					multicastSocket.receive(receivePacket);
 					String message = new String(receivePacket.getData());
+					String from = message.split(":")[0];
+
+//					usersInNetwork.add(from);
+
+					if (users != verifyMessage.size()) {
+						users++;
+						System.out.println("New user found in network: " + from);
+						System.out.println(verifyMessage.getUsersInNetwork());
+					}
+
 					if (verifyMessage.checkRecipient(message)) {
 						System.out.println("Decrypting message payload...");
 						System.out.println("Sender: " + message.split(":")[0]
