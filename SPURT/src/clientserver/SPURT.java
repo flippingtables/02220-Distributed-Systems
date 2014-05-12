@@ -55,7 +55,6 @@ public class SPURT {
 			Thread client = new Client(GROUP, PORT, name, args[1]);
 			client.start();
 //			client.join();
-			System.out.println("Penish");
 		} catch (Exception e) {
 			System.out.println("Usage : [group-ip] [port]");
 		}
