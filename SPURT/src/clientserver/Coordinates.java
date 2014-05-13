@@ -13,7 +13,7 @@ public class Coordinates {
 
 	static public String localizedFormat(double value) {
 		Locale locale =  new Locale("en", "US");
-		String pattern = "###,###.###";
+		String pattern = "###,###.######";
 		NumberFormat nf = NumberFormat.getNumberInstance(locale);
 		DecimalFormat df = (DecimalFormat) nf;
 		df.applyPattern(pattern);

@@ -41,12 +41,15 @@ public class Client extends Thread {
 					String message = new String(receivePacket.getData());
 					String from = message.split(":")[0];
 
-//					usersInNetwork.add(from);
-
+					
+					//Add the new user o the network of users
+					verifyMessage.addUsersInNetwork(from);
+					
 					if (users != verifyMessage.size()) {
 						users++;
 						System.out.println("New user found in network: " + from);
-						System.out.println(verifyMessage.getUsersInNetwork());
+						System.out.println("Network: " +verifyMessage.getUsersInNetwork());
+						System.out.println();
 					}
 
 					if (verifyMessage.checkRecipient(message)) {
@@ -56,6 +59,7 @@ public class Client extends Thread {
 								+ receivePacket.getPort());
 						System.out.println("\tCoordinates: "
 								+ message.split(":")[2]);
+						System.out.println();
 					}
 					Thread.sleep(3000);
 				} catch (Exception e) {

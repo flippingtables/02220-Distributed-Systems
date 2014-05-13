@@ -6,13 +6,12 @@ import java.net.InetAddress;
 public class SPURT {
 
 	private static final int PORT = 9876;
+	
+	//It works over IPv6 as well, just substitute the IPv4 address with an IPv6 one "FF7E:230::1234"; 
 	private static final String MCAST_ADDR = "230.0.0.1";// "FF7E:230::1234";
-
 	private static InetAddress GROUP;
 	private static BufferedReader in = null;
 	private static int counter = 0;
-
-	// private static MessageVerifier verifyMessage;
 
 	public static void main(String[] args) {
 

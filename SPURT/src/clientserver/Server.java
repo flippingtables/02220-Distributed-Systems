@@ -24,6 +24,8 @@ public class Server extends Thread {
             Coordinates coords = new Coordinates();
             try {
                 serverSocket = new DatagramSocket();
+                String line = String.format("Broadcasting messages on: %s:%s \n", this.GROUP.toString(), this.PORT);
+                System.out.println(line);
                 try {
                     while (true) {
                         byte[] sendData = new byte[256];
@@ -33,6 +35,7 @@ public class Server extends Thread {
                         sendData = message(username, to, messageToSend);
                         
                         DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, GROUP, PORT);
+//                        System.out.println("Sending encrypted message to: "+to);
                         serverSocket.send(sendPacket);
                         Thread.sleep(2000);
                     }
