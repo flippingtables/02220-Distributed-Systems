@@ -31,6 +31,8 @@ public class Client extends Thread {
 		try {
 			multicastSocket = new MulticastSocket(PORT);
 			multicastSocket.joinGroup(GROUP);
+			String line = String.format("Listening for messages on: %s:%s \n", this.GROUP.toString(), this.PORT);
+            System.out.println(line);
 			int users = 0;
 			while (true) {
 				try {
