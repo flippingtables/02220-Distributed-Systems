@@ -37,7 +37,7 @@ public class Server extends Thread {
 					byte[] sendData = new byte[256];
 
 					// construct message to send
-					String messageToSend = coords.sendCoordinates();
+					String messageToSend = coords.getCoordinates();
 
 					if (messenger.get() != null) {
 						messageToSend = messageToSend + messenger.get();

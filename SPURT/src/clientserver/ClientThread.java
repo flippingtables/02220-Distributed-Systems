@@ -24,7 +24,7 @@ public class ClientThread extends Client{
 	private InetAddress GROUP;
 	private int PORT;
 	private String username;
-	private TrackerManager verifyMessage;
+	private MessageHandler verifyMessage;
 	private int broadcastInterval;
 	private Messenger messenger;
 	
@@ -35,7 +35,7 @@ public class ClientThread extends Client{
 		this.PORT = port;
 		this.username = name;
 		this.broadcastInterval = broadcastInterval;
-		verifyMessage = new TrackerManager(this.username);
+		verifyMessage = new MessageHandler(this.username);
 		this.messenger = messenger;
 	}
 	

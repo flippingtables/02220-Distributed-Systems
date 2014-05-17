@@ -19,7 +19,7 @@ public class Coordinates {
 		return df.format(value);
 	}
 
-	public String sendCoordinates() {
+	public String getCoordinates() {
 
 		double lat = (55 + Math.random());
 		double lon = (12 + Math.random());

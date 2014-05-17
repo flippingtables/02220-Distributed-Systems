@@ -13,7 +13,7 @@ public class Client extends Thread {
 	private InetAddress GROUP;
 	private int PORT;
 	private String username;
-	private TrackerManager verifyMessage;
+	private MessageHandler verifyMessage;
 	private int broadcastInterval;
 
 	public Client(InetAddress group, int port, String name, String to, int broadcastInterval) {
@@ -21,7 +21,7 @@ public class Client extends Thread {
 		this.PORT = port;
 		this.username = name;
 		this.broadcastInterval = broadcastInterval;
-		verifyMessage = new TrackerManager(this.username);
+		verifyMessage = new MessageHandler(this.username);
 
 	}
 

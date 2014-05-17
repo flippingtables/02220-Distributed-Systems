@@ -1,7 +1,10 @@
 package clientserver;
 
 import java.io.BufferedReader;
+import java.lang.reflect.InvocationTargetException;
 import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.ArrayList;
 
 /*
  * TODO broadcast my username every now and then	√
@@ -25,51 +28,114 @@ public class SPURT {
 	private static final int PORT = 9876;
 	
 	//It works over IPv6 as well, just substitute the IPv4 address with an IPv6 one "FF7E:230::1234"; 
-	private static final String MCAST_ADDR = "230.0.0.1";// "FF7E:230::1234";
-	private static InetAddress GROUP;
-	private static BufferedReader in = null;
-	private static int counter = 0;
+	private static final String	communicationBroadCastAddrHost = "230.0.0.1";// "FF7E:230::1234";
+	private static InetAddress	communicationBroadCastAddr;
+	private static int			communicationBroadCastAddrPort = 9000;
+
+	
+	private static int rekeyCount = 0;
+	private static int updateFrequency = 0;
+	private static String myID ="";
 	
 
-	public static void main(String[] args) {
-		Messenger messenger;
-		/*
-		 * The app should look something like this: starting app: 
-		 * broadcast on : IP:PORT
-		 * listen on : IP1:PORT1 
-		 * username : USERNAME
-		 * friends : X,Y,Z
-		 * message: “lat:long” sending... received from “friend” Decrypting…
-		 * “lat:long”
-		 */
+	private volatile static String	LMGAddress;
+	private volatile static int 	LMGAddressPort;
+	private volatile static String	GKey;
+	
+//	private static CommunicationRow myUser;
+	
+	private static ArrayList<CommunicationRow> users = new ArrayList<>();
+	
 
-		if (args.length != 2) {
+//	private static CommunicationTable communicationTable = new CommunicationTable();
+	
+	public static void main(String[] args) {
+		
+		CommunicationRow ab = new CommunicationRow("Alice","Bob","231.1.1.1",9999, 15,  "ABKey", "AliceGKey1",  0,  false,  0, "345,436","231.1.1.1",9999);
+		CommunicationRow ac = new CommunicationRow("Alice","Charlie","231.1.1.1",9999, 15,  "ACKey", "AliceGKey1",  0,  false,  0, "345,437","231.1.1.1",9999);
+		CommunicationRow ad = new CommunicationRow("Alice","Dora","231.1.1.1",9999, 15, "ADKey", "AliceGKey1",  0,  false,  0, "345,438","231.1.1.1",9999);
+		CommunicationRow ba = new CommunicationRow("Bob","Alice","232.2.2.2",8888, 10,    "ABKey", "BobGKey1",    0,  false,  0, "345,438","232.2.2.2",8888);
+		CommunicationRow da = new CommunicationRow("Dora","Alice","233.3.3.3",7777, 20,   "ADKey", "DoraGKey1",   0,  false,  0, "345,439","233.3.3.3",7777);
+		CommunicationRow db = new CommunicationRow("Dora","Bob","233.3.3.3",7777, 20, "BDKey", "DoraGKey1",   0,  false,  0, "345,410","233.3.3.3",7777);
+		CommunicationRow dc = new CommunicationRow("Dora","Charlie","233.3.3.3",7777, 20, "CDKey", "DoraGKey1",   0,  false,  0, "345,411","233.3.3.3",7777);
+		
+		Messenger messenger = new Messenger();
+		
+		CommunicationRow myUser = null;
+		
+		try {
+			communicationBroadCastAddr = InetAddress.getByName(communicationBroadCastAddrHost);
+		} catch (UnknownHostException e1) {
+			e1.printStackTrace();
+		}
+		
+		users.add(ab);
+		users.add(ac);
+		users.add(ad);
+		users.add(ba);
+		users.add(da);
+		users.add(db);
+		users.add(dc);
+		
+		if (args.length != 1) {
 			System.err
-					.println("Usage: java -jar spurt.jar YOURUSERNAME USERNAME_TO_SEND_TO");
+					.println("Usage: java -jar spurt.jar YOURUSERNAME [Alice, Bob, Charlie or Dora]");
 			System.exit(1);
 		}
-		String name = args[0];
-		String to	= args[1];
-		messenger = new Messenger();
+		myID = args[0];
+		System.out.println("My id: "+ myID);
+		updateFrequency = 20;
+		
+		//Find the first user in the table matching "my username"
+		for (CommunicationRow user : users){
+			if (user.getSenderID().equals(myID)){
+				myUser = user;
+				break;
+			}
+		}
+	
+//		Utils.clearConsole();
+		
+		LMGAddress		= myUser.getLastKnownLMGAddr();
+		LMGAddressPort	= myUser.getLastKnownLMGAddrPort();
+		GKey 			= myUser.getGKey();
 		
 		try {
 			System.out.println("Starting up server/Client");
-			GROUP = InetAddress.getByName(MCAST_ADDR);
+			
+			//Start the sender
+			Thread sender = new SenderThread(myUser.getSenderID(), myUser.getCurrentLMGAddr(), myUser.getCurrentLMGAddrPort(), myUser.getFrequency(), myUser.getPrivateKey(), myUser.getGKey());  
+			sender.setName("Sender" + myUser.getSenderID());  
+			sender.start();
+			
+			Thread.sleep(1000);
 
 			
-			Utils.clearConsole();
+			//start and count the number of listener threads
+			int ListenerNumber = 0;			
+			for (CommunicationRow user : users){
+				if (user.getSenderID().equals(myID)){
+					new ListenerThread(user.getReceiverID(), user.getCurrentLMGAddr(), user.getCurrentLMGAddrPort(), user.getGKey(), user.getFrequency(), users).start();
+//					listener.setName("LocListenerTo"+user.getReceiverID());
+//					listener.start();
+					ListenerNumber++;
+					Thread.sleep(1000);
+				}
+			}
 			
-			/*
-			 * Start the main Broadcast sender/receiver threads
-			 * Client thread will listen for messages
-			 * 		and spawn new listener/receiver threads
-			 * */
-			Thread server = new Server(GROUP, PORT, name, to, 5000, messenger);
-			server.start();			
-			Thread.sleep(3000);
-			Thread client = new ClientThread(GROUP, PORT, name, to, 3000, messenger);
-			client.start();
-			client.join();
+			
+			//start the communication thread
+			Thread CommListener = new CommunicationListenerThread(myID, communicationBroadCastAddr, communicationBroadCastAddrPort);
+			CommListener.setName("CommListener");
+			CommListener.start();
+
+			Thread.sleep(1000);
+			
+			Thread mainThread = new MainThread(users, updateFrequency);
+			mainThread.start();
+		
+			
+			
 		} catch (Exception e) {
 			System.out.println("Usage : [group-ip] [port]");
 		}

@@ -5,14 +5,14 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 
-public class TrackerManager {
+public class MessageHandler {
 
 	private HashSet<String> usersFollowingMe = new HashSet<String>();
 	private HashMap<String, Date> usersFollowingMe1 = new HashMap();
 	private HashSet<String> usersIFollow = new HashSet<String>();
 	private String username = "";
 
-	public TrackerManager(String username) {
+	public MessageHandler(String username) {
 		this.username = username;
 	}
 
@@ -55,11 +55,23 @@ public class TrackerManager {
 		if (messages.length <= 0)
 			return false;
 
-		if (!messages[0].contains(username) && messages[1].contains(username)) {
+		if (messages[0].contains(username)) {
 			return true;
 		} else {
 			return false;
 		}
 	}
 
+	public String decryptMessage(String key,  String message, String senderIPPort){
+		
+		try{
+			System.out.println("Decrypting message payload...\n" +
+		"Sender: " + message.split(":")[0] + "@" + senderIPPort + "\n"+ 
+					"\tCoordinates: "+ message.split(":")[1]+ "\n");
+		} catch (NullPointerException e){
+			System.out.println("decrypt");
+		}
+		return message.split(":")[1];
+	}
+	
 }
