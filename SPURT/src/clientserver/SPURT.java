@@ -3,6 +3,23 @@ package clientserver;
 import java.io.BufferedReader;
 import java.net.InetAddress;
 
+/*
+ * TODO broadcast my username every now and then	√
+ * TODO listen for users on the network				√
+ * TODO add ability to select friends
+ * TODO only send to friends
+ * TODO only listen to messages from friends
+ * TODO create main listening thread
+ * TODO client thread fpr followed user
+ * 			Listen for users
+ * 				Found new user spawn thread
+ * 			New message
+ * 			Verify message
+ * 			Send message to thread associated with user
+ * 			
+ * 
+ * */
+
 public class SPURT {
 
 	private static final int PORT = 9876;
@@ -12,9 +29,10 @@ public class SPURT {
 	private static InetAddress GROUP;
 	private static BufferedReader in = null;
 	private static int counter = 0;
+	
 
 	public static void main(String[] args) {
-
+		Messenger messenger;
 		/*
 		 * The app should look something like this: starting app: 
 		 * broadcast on : IP:PORT
@@ -31,29 +49,27 @@ public class SPURT {
 			System.exit(1);
 		}
 		String name = args[0];
-//		System.out.println("Broadcast on: IP:PORT:");
-//		Scanner reader = new Scanner(System.in);
-//		System.out.println("Enter the first number");
-//		//get user input for a
-//		String a = reader.nextLine();
+		String to	= args[1];
+		messenger = new Messenger();
 		
 		try {
 			System.out.println("Starting up server/Client");
 			GROUP = InetAddress.getByName(MCAST_ADDR);
-/*
- * TODO broadcast my username every now and then	√
- * TODO listen for users on the network				√
- * TODO add ability to select friends
- * TODO only send to friends
- * TODO only listen to messages from friends
- * 
- * */
-			Thread server = new Server(GROUP, PORT, name, args[1]);
-			server.start();
+
+			
+			Utils.clearConsole();
+			
+			/*
+			 * Start the main Broadcast sender/receiver threads
+			 * Client thread will listen for messages
+			 * 		and spawn new listener/receiver threads
+			 * */
+			Thread server = new Server(GROUP, PORT, name, to, 5000, messenger);
+			server.start();			
 			Thread.sleep(3000);
-			Thread client = new Client(GROUP, PORT, name, args[1]);
+			Thread client = new ClientThread(GROUP, PORT, name, to, 3000, messenger);
 			client.start();
-//			client.join();
+			client.join();
 		} catch (Exception e) {
 			System.out.println("Usage : [group-ip] [port]");
 		}
