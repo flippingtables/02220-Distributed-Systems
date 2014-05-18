@@ -4,6 +4,7 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 
 public class SenderThread extends Thread {
 
@@ -15,15 +16,15 @@ public class SenderThread extends Thread {
 //	private Messenger messenger;
 	private String privateKey;
 	private String gKey;
-	
-	public SenderThread(String senderID, String currentLMGAddr, int currentLMGAddrPort, int frequency, String privateKey, String gKey ) {
+	private ArrayList<CommunicationRow> users;
+	public SenderThread(String senderID, String currentLMGAddr, int currentLMGAddrPort, int frequency, String privateKey, String gKey, ArrayList<CommunicationRow> users) {
 		
 		this.currentLMGAddrPort = currentLMGAddrPort;
 		this.senderID = senderID;
 		this.frequency = frequency * 1000;
 		this.gKey = gKey;
 		this.privateKey = privateKey;
-		
+		this.users = users;
 		try {
 			this.currentLMGAddr = InetAddress.getByName(currentLMGAddr);
 		} catch (UnknownHostException e) {

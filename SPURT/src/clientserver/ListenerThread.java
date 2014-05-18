@@ -20,9 +20,10 @@ public class ListenerThread extends Thread {
 	private String gKey;
 	private ArrayList<CommunicationRow> users; 
 	private int timeoutCounter;
+	private String myUserID;
 	
 	
-	public ListenerThread(String senderID, String currentLMGAddr, int currentLMGAddrPort, String gKey,
+	public ListenerThread(String myUserID, String senderID, String currentLMGAddr, int currentLMGAddrPort, String gKey,
 			int frequency, ArrayList<CommunicationRow> users){
 		try {
 			this.currentLMGAddr = InetAddress.getByName(currentLMGAddr);
@@ -37,6 +38,7 @@ public class ListenerThread extends Thread {
 		this.gKey = gKey;
 		this.users = users;
 		this.timeoutCounter= 0;
+		this.myUserID = myUserID; 
 		messageHandler = new MessageHandler(this.senderID);
 	}
 
@@ -74,14 +76,15 @@ public class ListenerThread extends Thread {
 					String message = new String(receivePacket.getData());
 					String messageSender = message.split(":")[0];
 					
-					if (messageSender != senderID){
+					if (!messageSender.equalsIgnoreCase(myUserID)){
 							
 						String senderIPPort = receivePacket.getAddress() + ":" + receivePacket.getPort();
-						
-//						if (messageHandler.checkRecipient(message)) {
-							System.out.println("Received message: "+ message + " from message "+ messageSender);
+						System.out.println("Received message: "+ message + ", i am '"+myUserID+"'");						
+//						if (!messageSender.equals(myUserID)) {
+//							System.out.println("Received message: "+ message + " from message "+ messageSender);
 							String decryptedMessage = messageHandler.decryptMessage(gKey, message, senderIPPort);
-							updateTables(index, decryptedMessage);
+							
+							updateTables(findUser(message.split(":")[0]), decryptedMessage); //TODO This doesnt work properly
 							users.get(index).setFreshnessCounter(0); //FRESH DATA
 //						} else {
 //							continue;

@@ -104,7 +104,7 @@ public class SPURT {
 			System.out.println("Starting up server/Client");
 			
 			//Start the sender
-			Thread sender = new SenderThread(myUser.getSenderID(), myUser.getCurrentLMGAddr(), myUser.getCurrentLMGAddrPort(), myUser.getFrequency(), myUser.getPrivateKey(), myUser.getGKey());  
+			Thread sender = new SenderThread(myUser.getSenderID(), myUser.getCurrentLMGAddr(), myUser.getCurrentLMGAddrPort(), myUser.getFrequency(), myUser.getPrivateKey(), myUser.getGKey(), users);  
 			sender.setName("Sender" + myUser.getSenderID());  
 			sender.start();
 			
@@ -114,8 +114,8 @@ public class SPURT {
 			//start and count the number of listener threads
 			int ListenerNumber = 0;			
 			for (CommunicationRow user : users){
-				if (user.getSenderID().equals(myID)){
-					new ListenerThread(user.getReceiverID(), user.getCurrentLMGAddr(), user.getCurrentLMGAddrPort(), user.getGKey(), user.getFrequency(), users).start();
+				if (user.getReceiverID().equals(myID)){
+					new ListenerThread(myUser.getSenderID(), user.getReceiverID(), user.getCurrentLMGAddr(), user.getCurrentLMGAddrPort(), user.getGKey(), user.getFrequency(), users).start();
 //					listener.setName("LocListenerTo"+user.getReceiverID());
 //					listener.start();
 					ListenerNumber++;
@@ -129,7 +129,7 @@ public class SPURT {
 			CommListener.setName("CommListener");
 			CommListener.start();
 
-			Thread.sleep(1000);
+//			Thread.sleep(1000);
 			
 			Thread mainThread = new MainThread(users, updateFrequency);
 			mainThread.start();
