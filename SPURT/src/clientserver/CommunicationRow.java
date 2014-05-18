@@ -103,10 +103,10 @@ public class CommunicationRow {
 	public void setFrequency(int frequency) {
 		Frequency = frequency;
 	}
-	public String getLocation() {
+	public synchronized String getLocation() {
 		return Location;
 	}
-	public void setLocation(String location) {
+	public synchronized void setLocation(String location) {
 		Location = location;
 	}
 	public int getTimestamp() {

@@ -44,7 +44,7 @@ public class SPURT {
 	
 //	private static CommunicationRow myUser;
 	
-	private static ArrayList<CommunicationRow> users = new ArrayList<>();
+	private static volatile ArrayList<CommunicationRow> users = new ArrayList<>();
 	
 
 //	private static CommunicationTable communicationTable = new CommunicationTable();
@@ -115,7 +115,8 @@ public class SPURT {
 			int ListenerNumber = 0;			
 			for (CommunicationRow user : users){
 				if (user.getReceiverID().equals(myID)){
-					new ListenerThread(myUser.getSenderID(), user.getReceiverID(), user.getCurrentLMGAddr(), user.getCurrentLMGAddrPort(), user.getGKey(), user.getFrequency(), users).start();
+					System.out.println("Thread " + myID + "->"+user.getSenderID()+":"+user.getReceiverID());
+					new ListenerThread(myID, user.getSenderID(), user.getCurrentLMGAddr(), user.getCurrentLMGAddrPort(), user.getGKey(), user.getFrequency(), users).start();
 //					listener.setName("LocListenerTo"+user.getReceiverID());
 //					listener.start();
 					ListenerNumber++;
@@ -131,7 +132,7 @@ public class SPURT {
 
 //			Thread.sleep(1000);
 			
-			Thread mainThread = new MainThread(users, updateFrequency);
+			Thread mainThread = new MainThread(myID, users, updateFrequency);
 			mainThread.start();
 		
 			

@@ -6,27 +6,31 @@ public class MainThread extends Thread {
 
 	private ArrayList<CommunicationRow> users;
 	private int updateFrequency;
-	public MainThread(ArrayList<CommunicationRow> users, int updateFrequency) {
+	private String myID;
+	
+	public MainThread(String myID, ArrayList<CommunicationRow> users, int updateFrequency) {
 		this.users = users;
-		this.updateFrequency = updateFrequency * 1000;
+		this.updateFrequency = (updateFrequency * 100);
+		this.myID = myID;
 	}
 
 	public void run() {
 		while (true) {
 			try {
 				for (CommunicationRow user : users) {
-					System.out.println(user.getReceiverID() + " "
-							+ user.getFreshnessCounter());
-					if (user.getFreshnessCounter() <= 1)
-						System.out.println("Current location: "
-								+ user.getLocation());
+					
+//					if (!myID.equals(user.getReceiverID())){
+						String nameFreshness = user.getSenderID()+":"+user.getReceiverID() + " "+ user.getFreshnessCounter();
+//					System.out.println(user.getReceiverID() + " "+ user.getFreshnessCounter());
+						if (user.getFreshnessCounter() == 0
+								|| user.getFreshnessCounter() == 1)
+						System.out.println(nameFreshness+", Current location: "+ user.getLocation());
 					if (user.getFreshnessCounter() == 2
 							|| user.getFreshnessCounter() == 3)
-						System.out.println("Stale location: "
-								+ user.getLocation());
+						System.out.println(nameFreshness+", Stale location: " + user.getLocation());
 					if (user.getFreshnessCounter() > 3)
-						System.out.println("Last known location: "
-								+ user.getLocation());
+						System.out.println(nameFreshness+", Last known location: " + user.getLocation());
+//					}
 					Thread.sleep(updateFrequency);
 				}
 

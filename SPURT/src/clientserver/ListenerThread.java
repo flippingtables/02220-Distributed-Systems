@@ -34,7 +34,7 @@ public class ListenerThread extends Thread {
 		
 		this.currentLMGAddrPort = currentLMGAddrPort;
 		this.senderID = senderID;
-		this.frequency = frequency * 1000;
+		this.frequency = frequency * 100;
 		this.gKey = gKey;
 		this.users = users;
 		this.timeoutCounter= 0;
@@ -51,8 +51,9 @@ public class ListenerThread extends Thread {
 			String line = String.format("Listening for messages by %s on: %s:%s \n", this.senderID, this.currentLMGAddr.toString(), this.currentLMGAddrPort);
             System.out.println(line);
 			int index = findUser(senderID);
-			
 			users.get(index).setFreshnessCounter(0); //Initialize the freshness data
+			
+			
 			while (true) {
 				try {
 					
@@ -76,22 +77,27 @@ public class ListenerThread extends Thread {
 					String message = new String(receivePacket.getData());
 					String messageSender = message.split(":")[0];
 					
+					
+					
+					
+					
 					if (!messageSender.equalsIgnoreCase(myUserID)){
-							
-						String senderIPPort = receivePacket.getAddress() + ":" + receivePacket.getPort();
-						System.out.println("Received message: "+ message + ", i am '"+myUserID+"'");						
-//						if (!messageSender.equals(myUserID)) {
-//							System.out.println("Received message: "+ message + " from message "+ messageSender);
+						if (messageSender.equals(senderID)){
+//							System.out.println("Thread: "+ senderID+ ", Msg:"+ message + ", me: "+myUserID+":"+users.get(index).getReceiverID()+":"+users.get(index).getSenderID());
+							String senderIPPort = receivePacket.getAddress() + ":" + receivePacket.getPort();
+
 							String decryptedMessage = messageHandler.decryptMessage(gKey, message, senderIPPort);
 							
-							updateTables(findUser(message.split(":")[0]), decryptedMessage); //TODO This doesnt work properly
-							users.get(index).setFreshnessCounter(0); //FRESH DATA
-//						} else {
-//							continue;
-//						}
+							updateTables(findUser(messageSender), decryptedMessage); //TODO This doesnt work properly
+							users.get(index).setFreshnessCounter(0); //FRESH DATA{
+						
+						} else {
+							continue;
+						}
 					} else {
 						timeoutCounter = users.get(index).getFreshnessCounter(); 
-						users.get(index).setFreshnessCounter(users.get(index).getFreshnessCounter() + 1); //DATA is getting older
+						users.get(index).setFreshnessCounter(timeoutCounter + 1); //DATA is getting older
+						System.out.println(String.format("Upd fC for %s. Was %s now %s", users.get(index).getReceiverID(), timeoutCounter,users.get(index).getFreshnessCounter()));
 					}
 					
 					if (users.get(index).getFreshnessCounter() % 5 == 4){
@@ -129,8 +135,13 @@ public class ListenerThread extends Thread {
 	}
 	
 	private void updateTables(int userIndex, String decryptedMessage){
+		
 		String coordinates = decryptedMessage;
+		String before = users.get(userIndex).getLocation();
+		
+		
 		users.get(userIndex).setLocation(coordinates);
+		System.out.println("B: "+ before+ ", A: "+users.get(userIndex).getLocation()+ myUserID+" upd " + users.get(userIndex).getReceiverID()+" "+decryptedMessage +"\n");
 	}
 	
 }
