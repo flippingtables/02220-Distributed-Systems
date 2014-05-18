@@ -49,7 +49,7 @@ public class SenderThread extends Thread {
 					String messageToSend = coords.getCoordinates();
 					
 					sendData = message(senderID, enryptMessagePayload(gKey, messageToSend));
-					System.out.println("Broadcasting msg: "+ new String(sendData, "UTF-8")+"\n");
+//					System.out.println("Broadcasting msg: "+ new String(sendData, "UTF-8")+"\n");
 					DatagramPacket sendPacket = new DatagramPacket(sendData,
 							sendData.length, currentLMGAddr, currentLMGAddrPort);
 

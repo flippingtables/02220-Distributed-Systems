@@ -141,7 +141,7 @@ public class ListenerThread extends Thread {
 		
 		
 		users.get(userIndex).setLocation(coordinates);
-		System.out.println("B: "+ before+ ", A: "+users.get(userIndex).getLocation()+ myUserID+" upd " + users.get(userIndex).getReceiverID()+" "+decryptedMessage +"\n");
+//		System.out.println("B: "+ before+ ", A: "+users.get(userIndex).getLocation()+ myUserID+" upd " + users.get(userIndex).getReceiverID()+" "+decryptedMessage +"\n");
 	}
 	
 }

@@ -19,7 +19,7 @@ public class MainThread extends Thread {
 			try {
 				for (CommunicationRow user : users) {
 					
-//					if (!myID.equals(user.getReceiverID())){
+					if (myID.equals(user.getSenderID())){
 						String nameFreshness = user.getSenderID()+":"+user.getReceiverID() + " "+ user.getFreshnessCounter();
 //					System.out.println(user.getReceiverID() + " "+ user.getFreshnessCounter());
 						if (user.getFreshnessCounter() == 0
@@ -30,7 +30,7 @@ public class MainThread extends Thread {
 						System.out.println(nameFreshness+", Stale location: " + user.getLocation());
 					if (user.getFreshnessCounter() > 3)
 						System.out.println(nameFreshness+", Last known location: " + user.getLocation());
-//					}
+					}
 					Thread.sleep(updateFrequency);
 				}
 
