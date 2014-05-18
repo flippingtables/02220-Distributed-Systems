@@ -18,23 +18,34 @@ public class MainThread extends Thread {
 		while (true) {
 			try {
 				for (CommunicationRow user : users) {
-					
-					if (myID.equals(user.getSenderID())){
-						String nameFreshness = user.getSenderID()+":"+user.getReceiverID() + " "+ user.getFreshnessCounter();
-//					System.out.println(user.getReceiverID() + " "+ user.getFreshnessCounter());
+
+					if (myID.equals(user.getSenderID())) {
+						String nameFreshness = user.getSenderID() + ":"
+								+ user.getReceiverID() + " "
+								+ user.getFreshnessCounter();
+						//
 						if (user.getFreshnessCounter() == 0
-								|| user.getFreshnessCounter() == 1)
-						System.out.println(nameFreshness+", Current location: "+ user.getLocation());
-					if (user.getFreshnessCounter() == 2
-							|| user.getFreshnessCounter() == 3)
-						System.out.println(nameFreshness+", Stale location: " + user.getLocation());
-					if (user.getFreshnessCounter() > 3)
-						System.out.println(nameFreshness+", Last known location: " + user.getLocation());
+								|| user.getFreshnessCounter() == 1) {
+							System.out.println(nameFreshness
+									+ ", Current location: "
+									+ user.getLocation());
+						}
+						if (user.getFreshnessCounter() == 2
+								|| user.getFreshnessCounter() == 3) {
+							System.out
+									.println(nameFreshness
+											+ ", Stale location: "
+											+ user.getLocation());
+						}
+						if (user.getFreshnessCounter() > 3) {
+							System.out.println(nameFreshness
+									+ ", Last known location: "
+									+ user.getLocation());
+						}
+						Thread.sleep(updateFrequency);
 					}
-					Thread.sleep(updateFrequency);
 				}
 
-				
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}

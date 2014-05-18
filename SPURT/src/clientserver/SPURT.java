@@ -1,27 +1,8 @@
 package clientserver;
 
-import java.io.BufferedReader;
-import java.lang.reflect.InvocationTargetException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
-
-/*
- * TODO broadcast my username every now and then	√
- * TODO listen for users on the network				√
- * TODO add ability to select friends
- * TODO only send to friends
- * TODO only listen to messages from friends
- * TODO create main listening thread
- * TODO client thread fpr followed user
- * 			Listen for users
- * 				Found new user spawn thread
- * 			New message
- * 			Verify message
- * 			Send message to thread associated with user
- * 			
- * 
- * */
 
 public class SPURT {
 
@@ -31,23 +12,19 @@ public class SPURT {
 	private static final String	communicationBroadCastAddrHost = "230.0.0.1";// "FF7E:230::1234";
 	private static InetAddress	communicationBroadCastAddr;
 	private static int			communicationBroadCastAddrPort = 9000;
-
-	
-	private static int rekeyCount = 0;
 	private static int updateFrequency = 0;
 	private static String myID ="";
-	
 
+	private static volatile ArrayList<CommunicationRow> users = new ArrayList<>();
+	
+//  private static int rekeyCount = 0;
 	private volatile static String	LMGAddress;
 	private volatile static int 	LMGAddressPort;
 	private volatile static String	GKey;
-	
 //	private static CommunicationRow myUser;
-	
-	private static volatile ArrayList<CommunicationRow> users = new ArrayList<>();
+//	private static CommunicationTable communicationTable = new CommunicationTable();
 	
 
-//	private static CommunicationTable communicationTable = new CommunicationTable();
 	
 	public static void main(String[] args) {
 		
@@ -94,7 +71,7 @@ public class SPURT {
 			}
 		}
 	
-//		Utils.clearConsole();
+		Utils.clearConsole();
 		
 		LMGAddress		= myUser.getLastKnownLMGAddr();
 		LMGAddressPort	= myUser.getLastKnownLMGAddrPort();
@@ -115,10 +92,10 @@ public class SPURT {
 			int ListenerNumber = 0;			
 			for (CommunicationRow user : users){
 				if (user.getReceiverID().equals(myID)){
-					System.out.println("Thread " + myID + "->"+user.getSenderID()+":"+user.getReceiverID());
-					new ListenerThread(myID, user.getSenderID(), user.getCurrentLMGAddr(), user.getCurrentLMGAddrPort(), user.getGKey(), user.getFrequency(), users).start();
-//					listener.setName("LocListenerTo"+user.getReceiverID());
-//					listener.start();
+					System.out.println("Thread for messages from: " +user.getSenderID()+"->"+user.getReceiverID());
+					Thread listener = new ListenerThread(myID, user.getSenderID(), user.getCurrentLMGAddr(), user.getCurrentLMGAddrPort(), user.getGKey(), user.getFrequency(), users);
+					listener.setName("LocListenerTo"+user.getReceiverID());
+					listener.start();
 					ListenerNumber++;
 					Thread.sleep(1000);
 				}
@@ -130,7 +107,7 @@ public class SPURT {
 			CommListener.setName("CommListener");
 			CommListener.start();
 
-//			Thread.sleep(1000);
+			Thread.sleep(1000);
 			
 			Thread mainThread = new MainThread(myID, users, updateFrequency);
 			mainThread.start();

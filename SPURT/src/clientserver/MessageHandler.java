@@ -64,13 +64,13 @@ public class MessageHandler {
 
 	public String decryptMessage(String key,  String message, String senderIPPort){
 		
-//		try{
-//			System.out.println("Decrypting message payload...\n" +
-//		"Sender: " + message.split(":")[0] + "@" + senderIPPort + "\n"+ 
-//					"\tCoordinates: "+ message.split(":")[1]+ "\n");
-//		} catch (NullPointerException e){
-//			System.out.println("decrypt");
-//		}
+		try{
+			System.out.println("\nNew message received:\n\tDecrypting message payload...\n" +
+					"\tSender: " + message.split(":")[0] + "@" + senderIPPort + "\n"+ 
+					"\tCoordinates: "+ message.split(":")[1]+ "\n");
+		} catch (NullPointerException e){
+			System.out.println("decrypt");
+		}
 		return message.split(":")[1];
 	}
 	

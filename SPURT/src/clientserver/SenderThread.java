@@ -21,7 +21,7 @@ public class SenderThread extends Thread {
 		
 		this.currentLMGAddrPort = currentLMGAddrPort;
 		this.senderID = senderID;
-		this.frequency = frequency * 100;
+		this.frequency = frequency * 200;
 		this.gKey = gKey;
 		this.privateKey = privateKey;
 		this.users = users;
@@ -47,9 +47,7 @@ public class SenderThread extends Thread {
 
 					// construct message to send
 					String messageToSend = coords.getCoordinates();
-					
 					sendData = message(senderID, enryptMessagePayload(gKey, messageToSend));
-//					System.out.println("Broadcasting msg: "+ new String(sendData, "UTF-8")+"\n");
 					DatagramPacket sendPacket = new DatagramPacket(sendData,
 							sendData.length, currentLMGAddr, currentLMGAddrPort);
 
