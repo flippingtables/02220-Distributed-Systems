@@ -20,27 +20,27 @@ public class MainThread extends Thread {
 				for (CommunicationRow user : users) {
 
 					if (myID.equals(user.getSenderID())) {
-						String nameFreshness = user.getSenderID() + ":"
-								+ user.getReceiverID() + " "
+						String nameFreshness = "Followed users' location:\n\t"+ 
+								user.getReceiverID() + " "
 								+ user.getFreshnessCounter();
 						//
 						if (user.getFreshnessCounter() == 0
 								|| user.getFreshnessCounter() == 1) {
 							System.out.println(nameFreshness
-									+ ", Current location: "
-									+ user.getLocation());
+									+ "\n\tCurrent location: "
+									+ user.getLocation()+"\n");
 						}
 						if (user.getFreshnessCounter() == 2
 								|| user.getFreshnessCounter() == 3) {
 							System.out
 									.println(nameFreshness
-											+ ", Stale location: "
-											+ user.getLocation());
+											+ "\n\tStale location: "
+											+ user.getLocation()+"\n");
 						}
 						if (user.getFreshnessCounter() > 3) {
 							System.out.println(nameFreshness
-									+ ", Last known location: "
-									+ user.getLocation());
+									+ "\n\tLast known location: "
+									+ user.getLocation()+"\n");
 						}
 						Thread.sleep(updateFrequency);
 					}
