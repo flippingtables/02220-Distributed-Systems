@@ -55,6 +55,7 @@ public class CommunicationListenerThread extends Thread {
 					String messageSender = message.split(":")[0];
 					String messageContent  =message.split(":")[1];
 					if (!messageSender.equalsIgnoreCase(myID) && messageContent.equals("sendNewGKey")){
+							System.out.println("Receive generate new gKey request from "+ messageSender+ "\n\tGenerating new Group key and sending it back to sender...");
 							String senderIPPort = receivePacket.getAddress() + ":" + receivePacket.getPort();
 							int senderIndex = findUser(messageSender);
 							String decryptedMessage = messageHandler.decryptMessage("", message, senderIPPort);

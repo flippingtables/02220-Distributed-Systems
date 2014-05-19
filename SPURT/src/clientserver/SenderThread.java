@@ -69,7 +69,7 @@ public class SenderThread extends Thread {
 //							String sendRekeyMessage = newGroupKey(gKey);
 							sendRekeyData = message(senderID, "sendNewGKey");
 							DatagramPacket sendRekeyDataPacket = new DatagramPacket(sendRekeyData,
-									sendRekeyData.length, currentLMGAddr, currentLMGAddrPort);
+									sendRekeyData.length, communicationBroadCastAddr, communicationBroadCastAddrPort);
 							serverSocket.send(sendRekeyDataPacket);
 							user.setSendGKey(false);
 						}
