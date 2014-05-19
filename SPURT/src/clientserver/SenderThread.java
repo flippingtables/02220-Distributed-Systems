@@ -17,6 +17,11 @@ public class SenderThread extends Thread {
 	private String privateKey;
 	private String gKey;
 	private ArrayList<CommunicationRow> users;
+	
+	private static final String	communicationBroadCastAddrHost = "230.0.0.1";
+	private static InetAddress	communicationBroadCastAddr;
+	private static int			communicationBroadCastAddrPort = 9000;
+	
 	public SenderThread(String senderID, String currentLMGAddr, int currentLMGAddrPort, int frequency, String privateKey, String gKey, ArrayList<CommunicationRow> users) {
 		
 		this.currentLMGAddrPort = currentLMGAddrPort;
@@ -50,14 +55,33 @@ public class SenderThread extends Thread {
 					sendData = message(senderID, enryptMessagePayload(gKey, messageToSend));
 					DatagramPacket sendPacket = new DatagramPacket(sendData,
 							sendData.length, currentLMGAddr, currentLMGAddrPort);
-
 					serverSocket.send(sendPacket);
+					
+					
+					//Rekeying messages
+					for (CommunicationRow user: users){
+						if (user.getSenderID().equals(senderID) && user.isSendGKey()){
+							
+							System.out.println("Sending new group key request to "+ user.getReceiverID()+"\n");
+							communicationBroadCastAddr = InetAddress.getByName(communicationBroadCastAddrHost);
+							byte[] sendRekeyData = new byte[256];
+
+//							String sendRekeyMessage = newGroupKey(gKey);
+							sendRekeyData = message(senderID, "sendNewGKey");
+							DatagramPacket sendRekeyDataPacket = new DatagramPacket(sendRekeyData,
+									sendRekeyData.length, currentLMGAddr, currentLMGAddrPort);
+							serverSocket.send(sendRekeyDataPacket);
+							user.setSendGKey(false);
+						}
+					}
 					Thread.sleep(frequency);
 				}
 			} catch (Exception e) {
+				e.printStackTrace();
 				System.out.println(e);
 			}
 		} catch (Exception e) {
+			e.printStackTrace();
 			System.out.println(e);
 		} finally {
 			serverSocket.close();
@@ -67,15 +91,19 @@ public class SenderThread extends Thread {
 	/*
 	 * @param from The Sender
 	 * 
-	 * @param to The receiver
-	 * 
 	 * @message The message payload, this will be encrypted before transmission
 	 */
 	private byte[] message(String from, String message) {
 		return (from + ":" + message).getBytes();
 	}
+	
+	private byte[] message(String from, String to, String message) {
+		return (from + ":" + to +":"+ message).getBytes();
+	}
 
 	private String enryptMessagePayload(String groupKey, String message) {
 		return message;
 	}
+	
+	
 }

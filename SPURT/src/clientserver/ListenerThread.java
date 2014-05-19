@@ -20,7 +20,7 @@ public class ListenerThread extends Thread {
 	private int timeoutCounter;
 	private String myUserID;
 	
-	private static int TIMEOUT = 10000; //10 Seconds
+	private static int TIMEOUT = 5000; //10 Seconds
 	
 	public ListenerThread(String myUserID, String senderID, String currentLMGAddr, int currentLMGAddrPort, String gKey,
 			int frequency, ArrayList<CommunicationRow> users){

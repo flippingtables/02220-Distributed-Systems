@@ -21,7 +21,7 @@ public class MainThread extends Thread {
 
 					if (myID.equals(user.getSenderID())) {
 						String nameFreshness = "Followed users' location:\n\t"+ 
-								user.getReceiverID() + " "
+								user.getReceiverID() + "\n\tFreshness: "
 								+ user.getFreshnessCounter();
 						//
 						if (user.getFreshnessCounter() == 0
@@ -45,40 +45,9 @@ public class MainThread extends Thread {
 						Thread.sleep(updateFrequency);
 					}
 				}
-
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
 		}
-
 	}
-	
-	
-	/*Loop
-	
-
-	foreach row where ReceiverID = MyID
-		Output position (lat,long)
-		If row.freshness = 0 or 1
-			Output “Current location”
-		Else if row.freshness = 2 or 3
-			Output  “Stale Location”
-		Else Output “Last known location”
-	End foreach
-End loop
-
-Sleep (UpdateFrequency)
-
-// Create Rekey Event
-ReKeyCount++;
-If reKeyCount = 10
-RekeyCount = 0
-LMGAddress = LMGAddress + constant //change address and/or port
-foreach row in table where SenderID = myID
-		row.sendGKey = True
-	end foreach
-Endif	
-			 * 
-			 * */
-
 }

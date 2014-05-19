@@ -4,7 +4,7 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 
-public class SPURT {
+public class SPUR {
 
 	private static final int PORT = 9876;
 	
@@ -37,7 +37,7 @@ public class SPURT {
 		CommunicationRow dc = new CommunicationRow("Dora","Charlie","233.3.3.3",7777, 20, "CDKey", "DoraGKey1",   0,  false,  0, "345,411","233.3.3.3",7777);
 		
 		Messenger messenger = new Messenger();
-		
+	
 		CommunicationRow myUser = null;
 		
 		try {
@@ -103,7 +103,7 @@ public class SPURT {
 			
 			
 			//start the communication thread
-			Thread CommListener = new CommunicationListenerThread(myID, communicationBroadCastAddr, communicationBroadCastAddrPort);
+			Thread CommListener = new CommunicationListenerThread(myID, communicationBroadCastAddrHost, communicationBroadCastAddrPort, users);
 			CommListener.setName("CommListener");
 			CommListener.start();
 
