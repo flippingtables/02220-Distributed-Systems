@@ -58,22 +58,44 @@ public class SenderThread extends Thread {
 					serverSocket.send(sendPacket);
 					
 					
-					//Rekeying messages
+					//Send rekey request to all clients that have timed out
 					for (CommunicationRow user: users){
 						if (user.getSenderID().equals(senderID) && user.isSendGKey()){
-							
-							System.out.println("Sending new group key request to "+ user.getReceiverID()+"\n");
-							communicationBroadCastAddr = InetAddress.getByName(communicationBroadCastAddrHost);
+							System.out.println("Sending request for gKey from "+ user.getReceiverID()+"\n");
 							byte[] sendRekeyData = new byte[256];
-
-//							String sendRekeyMessage = newGroupKey(gKey);
-							sendRekeyData = message(senderID, "sendNewGKey");
-							DatagramPacket sendRekeyDataPacket = new DatagramPacket(sendRekeyData,
-									sendRekeyData.length, communicationBroadCastAddr, communicationBroadCastAddrPort);
+							communicationBroadCastAddr = InetAddress.getByName(communicationBroadCastAddrHost);
+							sendRekeyData = message(senderID, user.getReceiverID(), "sendNewGKey");
+							DatagramPacket sendRekeyDataPacket = new DatagramPacket(sendRekeyData, sendRekeyData.length, communicationBroadCastAddr, communicationBroadCastAddrPort);
 							serverSocket.send(sendRekeyDataPacket);
 							user.setSendGKey(false);
 						}
 					}
+					
+					for (CommunicationRow user: users){
+						//Super hack, so that i can get the Sender to transmit the gKey, freq, LMG -> user
+						if (user.getFreshnessCounter() >= 666){
+							System.out.println("Sending request for gKey from "+ user.getReceiverID()+"\n");
+                            System.out.println("Sending gKey, freq, LMG ->"+ user.getReceiverID()+"\n");
+
+                            String gKey, LMGAddr;
+                            int LMGAddrPort, freq;
+                            String pKey;
+                            // Find myself and retreive user data
+                            gKey        = user.getGKey();
+                            freq        = user.getFrequency();
+                            LMGAddr     = user.getCurrentLMGAddr();
+                            LMGAddrPort = user.getCurrentLMGAddrPort();
+                            pKey        = user.getPrivateKey();
+                            String plaintextPayload = "updateData"+gKey+":"+freq+":"+LMGAddr+":"+LMGAddrPort;
+//                          byte[] sendRekeyData = new byte[256];
+                            byte[] CMG_Message = message(senderID, user.getReceiverID(), enryptMessagePayload(pKey,plaintextPayload)); 
+                            communicationBroadCastAddr = InetAddress.getByName(communicationBroadCastAddrHost);
+//                          sendRekeyData = message(senderID, "sendNewGKey");
+                            DatagramPacket sendRekeyDataPacket = new DatagramPacket(CMG_Message, CMG_Message.length, communicationBroadCastAddr, communicationBroadCastAddrPort);
+                            serverSocket.send(sendRekeyDataPacket);
+                            user.setSendGKey(false);
+						}
+					} 
 					Thread.sleep(frequency);
 				}
 			} catch (Exception e) {
@@ -101,9 +123,18 @@ public class SenderThread extends Thread {
 		return (from + ":" + to +":"+ message).getBytes();
 	}
 
-	private String enryptMessagePayload(String groupKey, String message) {
+	private String enryptMessagePayload(String key, String message) {
 		return message;
 	}
+	
+	private String newLMGAddr(String LMGAddr){
+		return LMGAddr;
+	}
+	
+	private int newLMGAddrPort(int currentLMGAddrPort){
+		return currentLMGAddrPort+1;
+	}
+	
 	
 	
 }

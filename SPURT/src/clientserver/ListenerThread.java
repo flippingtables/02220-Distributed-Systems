@@ -98,6 +98,7 @@ public class ListenerThread extends Thread {
 						users.get(index).setFreshnessCounter(0);
 					}
 					
+					
 				} catch (Exception e){
 
 					System.out.println("Exc0: " + e);

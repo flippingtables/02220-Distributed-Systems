@@ -53,14 +53,37 @@ public class CommunicationListenerThread extends Thread {
 					multicastSocket.receive(receivePacket);
 					String message = new String(receivePacket.getData());
 					String messageSender = message.split(":")[0];
-					String messageContent  =message.split(":")[1];
-					if (!messageSender.equalsIgnoreCase(myID) && messageContent.equals("sendNewGKey")){
-							System.out.println("Receive generate new gKey request from "+ messageSender+ "\n\tGenerating new Group key and sending it back to sender...");
-							String senderIPPort = receivePacket.getAddress() + ":" + receivePacket.getPort();
-							int senderIndex = findUser(messageSender);
-							String decryptedMessage = messageHandler.decryptMessage("", message, senderIPPort);
+					String messageRecipient = message.split(":")[1];
+					String messageContent = message.split(":")[2];
+					if (!messageSender.equalsIgnoreCase(myID) && messageContent.equals("sendNewGKey") && messageRecipient.equals(myID)){
+							System.out.println("Receive generate new gKey request from "+ messageSender);
 							
-					} 
+							for (CommunicationRow user: users){
+								if (user.getReceiverID().equals(messageRecipient) && user.getSenderID().equals(messageSender)){
+									
+									//Random number so that the Sender will know to retransmit LMG data
+									user.setFreshnessCounter(666);	
+								}
+							}
+					}
+					
+					if (!messageSender.equalsIgnoreCase(myID) && messageContent.equals("updateData") && messageRecipient.equals(myID)){
+						for (CommunicationRow user: users){
+							if (user.getReceiverID().equals(messageRecipient) && user.getSenderID().equals(messageSender)){
+								System.out.println("Received new data from "+ messageSender+ "\n\tUpdating references in the table...");
+								String gKey = message.split(":")[3];
+								int freq = Integer.parseInt(message.split(":")[4]);
+								String LMGAddr = message.split(":")[5];
+								int LMGAddrPort = Integer.parseInt(message.split(":")[6]);
+								user.setGKey(gKey);
+								user.setFrequency(freq);
+								user.setCurrentLMGAddr(LMGAddr);
+								user.setCurrentLMGAddrPort(LMGAddrPort);
+								
+							}
+						}
+				}
+					
 					Thread.sleep(broadcastInterval);
 				}catch (Exception e) {
 					System.out.println("Exc2: " + e);
@@ -93,6 +116,10 @@ public class CommunicationListenerThread extends Thread {
 			}
 		}
 		return -1;
+	}
+	
+	private String deryptMessageWithPrivateKey(String key, String message){
+		return message;
 	}
 
 }

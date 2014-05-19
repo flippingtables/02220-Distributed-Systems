@@ -23,7 +23,6 @@ public class SPUR {
 	private volatile static String	GKey;
 //	private static CommunicationRow myUser;
 //	private static CommunicationTable communicationTable = new CommunicationTable();
-	
 
 	
 	public static void main(String[] args) {
